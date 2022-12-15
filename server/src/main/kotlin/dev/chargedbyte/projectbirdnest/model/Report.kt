@@ -1,40 +1,37 @@
 package dev.chargedbyte.projectbirdnest.model
 
-import jakarta.xml.bind.annotation.XmlAttribute
-import jakarta.xml.bind.annotation.XmlElement
-import jakarta.xml.bind.annotation.XmlList
-import jakarta.xml.bind.annotation.XmlRootElement
-import java.util.*
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import java.time.OffsetDateTime
 
-@XmlRootElement
-data class Report(var deviceInformation: DeviceInformation? = null, var capture: Capture? = null) {
+data class Report(val deviceInformation: DeviceInformation, val capture: Capture) {
     data class DeviceInformation(
-        @get:XmlAttribute
-        var deviceId: String? = null,
-        var listenRange: Int? = null,
-        var deviceStarted: Calendar? = null,
-        var uptimeSeconds: Long? = null,
-        var updateIntervalMs: Long? = null
+        @JacksonXmlProperty(localName = "deviceId", isAttribute = true)
+        val id: String,
+        val listenRange: Int,
+        val deviceStarted: OffsetDateTime,
+        val uptimeSeconds: Long,
+        val updateIntervalMs: Long
     )
 
     data class Capture(
-        @get:XmlAttribute
-        var snapshotTimestamp: Calendar? = null,
-        @get:XmlElement(name = "drone")
-        @XmlList
-        var drones: List<Drone>? = null
+        @JacksonXmlProperty(isAttribute = true)
+        val snapshotTimestamp: OffsetDateTime,
+        @JacksonXmlProperty(localName = "drone")
+        @JacksonXmlElementWrapper(useWrapping = false)
+        val drones: List<Drone>
     ) {
         data class Drone(
-            var serialNumber: String? = null,
-            var model: String? = null,
-            var manufacturer: String? = null,
-            var mac: String? = null,
-            var ipv4: String? = null,
-            var ipv6: String? = null,
-            var firmware: String? = null,
-            var positionY: Double? = null,
-            var positionX: Double? = null,
-            var altitude: Double? = null
+            val serialNumber: String,
+            val model: String,
+            val manufacturer: String,
+            val mac: String,
+            val ipv4: String,
+            val ipv6: String,
+            val firmware: String,
+            val positionY: Double,
+            val positionX: Double,
+            val altitude: Double
         )
     }
 }

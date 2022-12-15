@@ -1,5 +1,6 @@
 package dev.chargedbyte.projectbirdnest.service
 
+import dev.chargedbyte.projectbirdnest.extensions.fromXml
 import dev.chargedbyte.projectbirdnest.model.Pilot
 import dev.chargedbyte.projectbirdnest.model.Report
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -10,12 +11,13 @@ import org.springframework.web.reactive.function.client.awaitBody
 import org.springframework.web.reactive.function.client.bodyToMono
 
 @Service
-class BirdnestService(private var birdnestApiClient: WebClient) {
+class BirdnestService(private val birdnestApiClient: WebClient) {
     suspend fun getReport(): Report = birdnestApiClient.get()
         .uri("/drones")
         .accept(MediaType.APPLICATION_XML)
         .retrieve()
-        .awaitBody()
+        .awaitBody<String>()
+        .fromXml()
 
     suspend fun getPilotByDroneSerialNumber(serialNumber: String): Pilot? = birdnestApiClient.get()
         .uri("/pilots/{serialNumber}", serialNumber)

@@ -22,10 +22,9 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-    implementation("com.sun.xml.bind:jaxb-impl")
 
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 
@@ -33,9 +32,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-
-    implementation("jakarta.xml.bind:jakarta.xml.bind-api")
 
     testImplementation("io.projectreactor:reactor-test")
 
