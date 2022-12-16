@@ -10,7 +10,7 @@ data class Report(val deviceInformation: DeviceInformation, val capture: Capture
         val id: String,
         val listenRange: Int,
         val deviceStarted: OffsetDateTime,
-        val uptimeSeconds: Long,
+        val uptimeSeconds: Int,
         val updateIntervalMs: Long
     )
 
@@ -20,18 +20,5 @@ data class Report(val deviceInformation: DeviceInformation, val capture: Capture
         @JacksonXmlProperty(localName = "drone")
         @JacksonXmlElementWrapper(useWrapping = false)
         val drones: List<Drone>
-    ) {
-        data class Drone(
-            val serialNumber: String,
-            val model: String,
-            val manufacturer: String,
-            val mac: String,
-            val ipv4: String,
-            val ipv6: String,
-            val firmware: String,
-            val positionY: Double,
-            val positionX: Double,
-            val altitude: Double
-        )
-    }
+    )
 }

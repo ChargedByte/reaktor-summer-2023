@@ -18,6 +18,6 @@ fun birdnestXmlMapper(): ObjectMapper = XmlMapper()
     .registerKotlinModule()
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
-inline fun <reified T> String.fromJson(): T = birdnestJsonMapper().readValue(this)
+inline fun <reified T : Any> String.fromJson(): T = birdnestJsonMapper().readValue(this)
 
-inline fun <reified T> String.fromXml(): T = birdnestXmlMapper().readValue(this)
+inline fun <reified T : Any> String.fromXml(): T = birdnestXmlMapper().readValue(this)
