@@ -1,3 +1,9 @@
+### Vue
+dist-ssr
+
+test-results/
+playwright-report/
+
 ### Node template
 # Logs
 logs

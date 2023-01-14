@@ -1,3 +1,3 @@
 rootProject.name = "ProjectBirdnest"
 
-include("server")
+include("client", "server")
