@@ -3,3 +3,9 @@ spring:
     server:
       mapping-path: /rsocket
       transport: websocket
+
+projectbirdnest:
+  ndz:
+    origin-x: 250000
+    origin-y: 250000
+    radius: 100000

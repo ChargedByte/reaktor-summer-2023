@@ -6,4 +6,5 @@ data class Violation(
     val drone: Drone,
     val pilot: Pilot?,
     val recordedAt: OffsetDateTime,
+    val closestDistanceToNest: Double,
 )

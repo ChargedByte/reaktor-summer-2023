@@ -1,15 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.0.0"
+    id("org.springframework.boot") version "3.0.1"
     id("io.spring.dependency-management") version "1.1.0"
-    kotlin("jvm") version "1.7.22"
-    kotlin("plugin.spring") version "1.7.22"
+    kotlin("jvm") version "1.8.0"
+    kotlin("kapt") version "1.8.0"
+    kotlin("plugin.spring") version "1.8.0"
 }
 
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
+        extendsFrom(configurations.kapt.get())
     }
 }
 
@@ -18,8 +20,6 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-cbor")
@@ -33,9 +33,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("org.springframework.boot:spring-boot-starter-rsocket")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("io.projectreactor:reactor-test")
 
