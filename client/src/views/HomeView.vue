@@ -80,14 +80,14 @@ requestStream(rsocket, "api.v1.violations.events", requestCount, maxPayloadCount
 <template>
   <v-main>
     <v-container fluid>
-      <v-data-table :headers="headers" :items="violations.values()" class="elevation-1">
+      <v-data-table :headers="headers" :items="Array.from(violations.values())" class="elevation-1">
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>Recorded Violations</v-toolbar-title>
           </v-toolbar>
         </template>
         <template v-slot:item.full_name="{ item }"
-        >{{ item.value.pilot.firstName }} {{ item.value.pilot.lastName }}
+          >{{ item.value.pilot.firstName }} {{ item.value.pilot.lastName }}
         </template>
         <template v-slot:item.recordedAt="{ item }">
           {{ item.value.recordedAt.toLocaleString() }}
