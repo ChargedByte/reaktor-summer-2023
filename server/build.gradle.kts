@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.8.0"
     kotlin("kapt") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
+    id("com.google.cloud.tools.jib") version "3.3.1"
 }
 
 configurations {
@@ -33,7 +34,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("org.springframework.boot:spring-boot-starter-rsocket")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -47,6 +47,18 @@ dependencies {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
+}
+
+jib {
+    to {
+        image = "projectbirdnest/server:latest"
+    }
+    from {
+        image = "gcr.io/distroless/java17-debian11:nonroot"
+    }
+    container {
+        ports = listOf("8080/tcp")
+    }
 }
 
 tasks.withType<KotlinCompile> {
