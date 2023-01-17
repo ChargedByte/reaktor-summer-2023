@@ -1,0 +1,26 @@
+networks:
+  birdnest:
+    external: false
+
+volumes:
+  redis:
+    driver: local
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: always
+    networks:
+      - birdnest
+    volumes:
+      - redis:/data
+
+  server:
+    image: projectbirdnest/server:latest
+    environment:
+      - REDIS_HOST=redis
+    restart: always
+    networks:
+      - birdnest
+    ports:
+      - "8080:8080/tcp"
