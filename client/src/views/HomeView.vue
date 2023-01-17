@@ -5,7 +5,8 @@ import { mdiOpenInNew } from "@mdi/js"
 
 import type { Violation } from "@/model/Violation"
 
-import { makeConnector, Requester, requestStream, RequestStreamCallbacks } from "@/utils/rsocket"
+import type { Requester, RequestStreamCallbacks } from "@/utils/rsocket"
+import { makeConnector, requestStream } from "@/utils/rsocket"
 import { parseViolationMessage } from "@/model/ViolationMessage"
 import { MessageAction } from "@/model/MessageAction"
 import DroneInformationDialog from "@/components/DroneInformationDialog.vue"
@@ -55,7 +56,7 @@ const openDroneDialog = (serialNumber: string) => {
   const drone = toRaw(violations.get(serialNumber)?.drone)
   if (drone) {
     store.$patch({ drone })
-    droneInformationDialog.value.openDialog()
+    droneInformationDialog.value?.openDialog()
   }
 }
 
