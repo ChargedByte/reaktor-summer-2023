@@ -61,7 +61,7 @@ const openDroneDialog = (serialNumber: string) => {
 }
 
 // Load RSocket data
-const connector = makeConnector(import.meta.env.VITE_RSOCKET_API)
+const connector = makeConnector(import.meta.env.VITE_API_RSOCKET)
 
 const rsocket = await connector.connect()
 
