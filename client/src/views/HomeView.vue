@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import { onBeforeUnmount, reactive } from "vue"
+import { onBeforeUnmount, reactive, ref, toRaw } from "vue"
+
+import { mdiOpenInNew } from "@mdi/js"
 
 import type { Violation } from "@/model/Violation"
 
 import { makeConnector, Requester, requestStream, RequestStreamCallbacks } from "@/utils/rsocket"
 import { parseViolationMessage } from "@/model/ViolationMessage"
 import { MessageAction } from "@/model/MessageAction"
+import DroneInformationDialog from "@/components/DroneInformationDialog.vue"
+import { useDroneStore } from "@/stores/drone"
 
 // Define data & state
+const store = useDroneStore()
+
 const violations = reactive(new Map<string, Violation>())
+
+const droneInformationDialog = ref<InstanceType<typeof DroneInformationDialog>>()
 
 const headers = [
   {
@@ -23,7 +31,7 @@ const headers = [
   },
   {
     title: "Full Name",
-    key: "full_name",
+    key: "fullName",
   },
   {
     title: "Email Address",
@@ -43,8 +51,16 @@ const headers = [
   },
 ]
 
+const openDroneDialog = (serialNumber: string) => {
+  const drone = toRaw(violations.get(serialNumber)?.drone)
+  if (drone) {
+    store.$patch({ drone })
+    droneInformationDialog.value.openDialog()
+  }
+}
+
 // Load RSocket data
-const connector = makeConnector("ws://localhost:8080/rsocket")
+const connector = makeConnector(import.meta.env.VITE_RSOCKET_API)
 
 const rsocket = await connector.connect()
 
@@ -54,8 +70,8 @@ const maxPayloadCount = undefined
 let requester: Requester | undefined = undefined
 
 const callbacks: RequestStreamCallbacks = {
-  onNext: (rqstr, payload) => {
-    if (!requester) requester = rqstr
+  onNext: (req, payload) => {
+    if (!requester) requester = req
 
     const message = parseViolationMessage(`${payload.data}`)
 
@@ -80,20 +96,31 @@ requestStream(rsocket, "api.v1.violations.events", requestCount, maxPayloadCount
 <template>
   <v-main>
     <v-container fluid>
+      <DroneInformationDialog ref="droneInformationDialog"></DroneInformationDialog>
+
       <v-data-table :headers="headers" :items="Array.from(violations.values())" class="elevation-1">
         <template v-slot:top>
           <v-toolbar flat>
             <v-toolbar-title>Recorded Violations</v-toolbar-title>
           </v-toolbar>
         </template>
-        <template v-slot:item.full_name="{ item }"
+
+        <template v-slot:item.fullName="{ item }"
           >{{ item.value.pilot.firstName }} {{ item.value.pilot.lastName }}
         </template>
+
         <template v-slot:item.recordedAt="{ item }">
           {{ item.value.recordedAt.toLocaleString() }}
         </template>
+
         <template v-slot:item.closestDistanceToNest="{ item }">
           {{ (item.value.closestDistanceToNest / 1000).toFixed(2) }}
+        </template>
+
+        <template v-slot:item.drone.serialNumber="{ item }">
+          <v-btn v-on:click="openDroneDialog(item.value.drone.serialNumber)" color="secondary">
+            <span><v-icon :icon="mdiOpenInNew"></v-icon> {{ item.value.drone.serialNumber }}</span>
+          </v-btn>
         </template>
       </v-data-table>
     </v-container>
