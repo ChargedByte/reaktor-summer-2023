@@ -7,6 +7,7 @@ plugins {
     kotlin("kapt") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
     id("com.google.cloud.tools.jib") version "3.3.1"
+    id("com.dorongold.task-tree") version "2.1.1"
 }
 
 configurations {
@@ -59,6 +60,19 @@ jib {
     container {
         ports = listOf("8080/tcp")
     }
+}
+
+val copyClientToBuildResources = tasks.register<Copy>("copyClientToBuildResources") {
+    dependsOn(":client:assemble")
+
+    from(project(":client").buildDir)
+    into("${buildDir}/resources/main/static")
+
+    include("**/*")
+}
+
+tasks.processResources {
+    dependsOn(copyClientToBuildResources)
 }
 
 tasks.withType<KotlinCompile> {
