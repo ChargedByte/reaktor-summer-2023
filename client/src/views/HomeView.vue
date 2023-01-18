@@ -47,11 +47,14 @@ const headers = [
     key: "closestDistanceToNest",
   },
   {
-    title: "Timestamp",
+    title: "Timestamp (UTC)",
     key: "recordedAt",
   },
 ]
 
+const browserLocale = navigator.languages.at(0) ?? "en-US"
+
+// Drone Information Dialog
 const openDroneDialog = (serialNumber: string) => {
   const drone = toRaw(violations.get(serialNumber)?.drone)
   if (drone) {
@@ -106,22 +109,38 @@ requestStream(rsocket, "api.v1.violations.events", requestCount, maxPayloadCount
           </v-toolbar>
         </template>
 
-        <template v-slot:item.fullName="{ item }"
-          >{{ item.value.pilot.firstName }} {{ item.value.pilot.lastName }}
-        </template>
-
-        <template v-slot:item.recordedAt="{ item }">
-          {{ item.value.recordedAt.toLocaleString() }}
-        </template>
-
-        <template v-slot:item.closestDistanceToNest="{ item }">
-          {{ (item.value.closestDistanceToNest / 1000).toFixed(2) }}
+        <template v-slot:item.pilot.pilotId="{ item }">
+          <span v-if="item.value.pilot">{{ item.value.pilot.pilotId }}</span>
+          <span class="font-italic" v-else>Not Found</span>
         </template>
 
         <template v-slot:item.drone.serialNumber="{ item }">
           <v-btn v-on:click="openDroneDialog(item.value.drone.serialNumber)" color="secondary">
             <span><v-icon :icon="mdiOpenInNew"></v-icon> {{ item.value.drone.serialNumber }}</span>
           </v-btn>
+        </template>
+
+        <template v-slot:item.fullName="{ item }">
+          <span v-if="item.value.pilot">{{ item.value.pilot.firstName }} {{ item.value.pilot.lastName }}</span>
+          <span class="font-italic" v-else>Not Found</span>
+        </template>
+
+        <template v-slot:item.pilot.email="{ item }">
+          <span v-if="item.value.pilot">{{ item.value.pilot.email }}</span>
+          <span class="font-italic" v-else>Not Found</span>
+        </template>
+
+        <template v-slot:item.pilot.phoneNumber="{ item }">
+          <span v-if="item.value.pilot">{{ item.value.pilot.phoneNumber }}</span>
+          <span class="font-italic" v-else>Not Found</span>
+        </template>
+
+        <template v-slot:item.closestDistanceToNest="{ item }">
+          {{ (item.value.closestDistanceToNest / 1000).toFixed(2) }}
+        </template>
+
+        <template v-slot:item.recordedAt="{ item }">
+          {{ item.value.recordedAt.toLocaleString(browserLocale) }}
         </template>
       </v-data-table>
     </v-container>
