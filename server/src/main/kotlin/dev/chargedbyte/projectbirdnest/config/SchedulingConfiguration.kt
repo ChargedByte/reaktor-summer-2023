@@ -24,11 +24,12 @@ class SchedulingConfiguration(
     fun scheduleTasks(): Unit = runBlocking {
         val report = birdnestApiService.getReport()
 
-        val period = Duration.ofMillis(report.deviceInformation.updateIntervalMs)
+        // Let's add 15 ms of delay to avoid pulling the date too early
+        val period = Duration.ofMillis(report.deviceInformation.updateIntervalMs + 15)
         val startTime = report.capture.snapshotTimestamp.plus(period).toInstant()
 
         logger.info("Scheduling '${ViolationMonitoringTask::class.qualifiedName}' to start at '$startTime' and to run every ${period.toMillis()} ms")
 
-        taskScheduler.scheduleWithFixedDelay(violationMonitoringTask, startTime, period)
+        taskScheduler.scheduleAtFixedRate(violationMonitoringTask, startTime, period)
     }
 }
